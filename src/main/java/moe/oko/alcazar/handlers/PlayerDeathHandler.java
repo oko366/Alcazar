@@ -15,21 +15,20 @@ public class PlayerDeathHandler {
     /**
      * Generates a dynamic death message.
      * Example:
-     * [*] Alice [0⚗] was slain by Bob [16⚗] using Diamond Sword.
+     * [*] Alice [0⚗] was killed by Bob [16⚗] using Diamond Sword.
      */
     public static void handlePlayerDeath(Player player) {
-        String system = "[*] ";
         char potion = '\u2697';
         int deathPotions = countPotions(player.getInventory());
         String coloredPotion = "" + ChatColor.RED + potion + ChatColor.RESET;
 
         // This is displayed when the player dies without an assailant.
-        String msg = system + player.getDisplayName() + " [" + deathPotions + coloredPotion + "] died.";
+        String msg = PrefixHandler.System + player.getDisplayName() + " [" + deathPotions + coloredPotion + "] died.";
         if (player.getKiller() != null) {
             Player killer = player.getKiller();
             String item;
             ItemStack weapon = killer.getInventory().getItemInMainHand();
-            // TODO: have item display hoverable metadata with JSON, simplify if statements to ternary
+            // TODO: have item display hoverable metadata with JSON
             // If null, default to "their hands".
             // Use custom item name when applicable.
             item = (weapon.getType() == Material.AIR) ? "their hands" : weapon.getItemMeta().getDisplayName();
@@ -38,7 +37,7 @@ public class PlayerDeathHandler {
             }
             int killerPotions = countPotions(killer.getInventory());
             // TODO: possibly add dynamic death types based on weapon
-            msg = system + player.getDisplayName() + " [" + deathPotions + coloredPotion + "] was killed by " + killer.getDisplayName() + " [" + killerPotions + coloredPotion + "]" + item + ".";
+            msg = PrefixHandler.System + player.getDisplayName() + " [" + deathPotions + coloredPotion + "] was killed by " + killer.getDisplayName() + " [" + killerPotions + coloredPotion + "]" + item + ".";
         }
         Bukkit.broadcastMessage(msg);
     }
