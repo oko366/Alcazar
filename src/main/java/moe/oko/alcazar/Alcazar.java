@@ -1,6 +1,7 @@
 package moe.oko.alcazar;
 
 import moe.oko.alcazar.commands.InventoryCommand;
+import moe.oko.alcazar.database.ASQL;
 import moe.oko.alcazar.events.MessageOfTheDayListener;
 import moe.oko.alcazar.events.PlayerDeathListener;
 import moe.oko.alcazar.handlers.PrefixHandler;
@@ -10,6 +11,9 @@ public class Alcazar extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Connect to database
+        ASQL.initConnection();
+
         // Register events
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
         getServer().getPluginManager().registerEvents(new MessageOfTheDayListener(), this);
