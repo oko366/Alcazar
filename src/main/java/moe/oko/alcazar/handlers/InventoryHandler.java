@@ -2,6 +2,7 @@ package moe.oko.alcazar.handlers;
 
 import moe.oko.alcazar.database.ASQL;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +38,7 @@ public class InventoryHandler {
 
     }
 
-    public static boolean load(Player player, String invName){
+    public static boolean load(Player player, String invName) throws IOException {
         String UUID = player.getUniqueId().toString();
         String[] serializedPlayerInventory = ASQL.getInv(UUID, invName);
 
@@ -47,21 +48,19 @@ public class InventoryHandler {
 
         String serializedInv = serializedPlayerInventory[0];
         String serializedArmor = serializedPlayerInventory[1];
-        Inventory inventory = null;
-        ItemStack[] armor = null;
-        try{
-            inventory = fromBase64(serializedInv);
-            armor = itemStackArrayFromBase64(serializedArmor);
-        } catch(Exception exception){
-            // I don't feel like printing this.
-            return false;
-        }
+        ItemStack[] inventory;
+        ItemStack[] armor;
+        inventory = itemStackArrayFromBase64(serializedInv);
+        armor = itemStackArrayFromBase64(serializedArmor);
 
-        player.getInventory().setContents(inventory.getContents());
+        player.getInventory().setContents(inventory);
         player.getInventory().setArmorContents(armor);
+        player.updateInventory();
+
 
         return true;
     }
+
 
     public static String[] playerInventoryToBase64(PlayerInventory playerInventory) throws IllegalStateException {
         // Get the main content part, this doesn't return the armor
@@ -118,6 +117,7 @@ public class InventoryHandler {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             Inventory inventory = Bukkit.getServer().createInventory(null, dataInput.readInt());
+
 
             // Read the serialized inventory
             for (int i = 0; i < inventory.getSize(); i++) {

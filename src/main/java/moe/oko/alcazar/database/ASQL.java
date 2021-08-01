@@ -25,7 +25,7 @@ public class ASQL {
             preparedStatement.setString(1, UUID);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                int count = resultSet.getInt("total");
+                int count = resultSet.getMetaData().getColumnCount();
                 preparedStatement.close();
                 resultSet.close();
                 return count;
@@ -36,13 +36,14 @@ public class ASQL {
 
         } catch (SQLException exception) {
             System.err.println("[DATABASE] ERROR | The moe.oko.alcazar.database.ASQL.countPlayerInventories function failed to execute successfully.");
+            System.err.println(exception);
         }
         return 0;
     }
 
     public static Boolean addNewInventory(String UUID, String name, String serializedInv, String serializedArmor) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO inventory_table(uuid, inventory_name, si, sa) VALUES (?, ?, ?, ?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO inventory_table(uuid, inventory_name, si, sa) VALUES (?, ?, ?, ?)");
             preparedStatement.setString(1, UUID);
             preparedStatement.setString(2, name);
             preparedStatement.setString(3, serializedInv);
@@ -52,15 +53,16 @@ public class ASQL {
             return true;
         } catch (SQLException exception) {
             System.err.println("[DATABASE] ERROR | The moe.oko.alcazar.database.ASQL.addNewInventory function failed to execute successfully.");
+            System.err.println(exception);
         }
         return false;
     }
 
     public static String[] getInv(String UUID, String invName){
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM positions WHERE uuid=? AND inventory_name=?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM inventory_table WHERE uuid=? AND inventory_name=?");
             preparedStatement.setString(1, UUID);
-            preparedStatement.setString(1, invName);
+            preparedStatement.setString(2, invName);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 String inventory = resultSet.getString("si");
@@ -71,6 +73,7 @@ public class ASQL {
             }
         } catch (SQLException e) {
             System.err.println("[DATABASE] ERROR | The moe.oko.alcazar.database.ASQL.getInv function failed to execute successfully.");
+            System.err.println(e);
         }
 
         return null;
