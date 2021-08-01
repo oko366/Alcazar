@@ -2,7 +2,6 @@ package moe.oko.alcazar.handlers;
 
 import moe.oko.alcazar.database.ASQL;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -29,7 +28,7 @@ public class InventoryHandler {
         String serializedArmor = serializedPlayerInventory[1];
 
         if(ASQL.addNewInventory(UUID, invName, serializedInv, serializedArmor)){
-            // Maybe put a success message here cunt.
+            player.sendMessage( PrefixHandler.System + "Saved " + invName + "!");
             return true;
         } else {
             // Failed to execute maybe put an error message here.
@@ -56,7 +55,7 @@ public class InventoryHandler {
         player.getInventory().setContents(inventory);
         player.getInventory().setArmorContents(armor);
         player.updateInventory();
-
+        player.sendMessage( PrefixHandler.System + "Loaded " + invName + "!");
 
         return true;
     }

@@ -16,9 +16,10 @@ public class InventoryCommand implements CommandExecutor {
             sender.sendMessage("You must be a player to run this command!");
             return false;
         }
+        String help = "/inv <save/load> <name>";
         if (args.length == 0) {
             // send help message
-            sender.sendMessage("args needed lol");
+            sender.sendMessage(help);
             return true;
         }
         switch (args[0].toLowerCase()) {
@@ -32,7 +33,7 @@ public class InventoryCommand implements CommandExecutor {
                 }
             }
 
-            default -> sender.sendMessage("0");
+            default -> sender.sendMessage(help);
         }
 
         // If the player (or console) uses our command correct, we can return true
