@@ -2,7 +2,7 @@ name: Alcazar
 author: oko
 description: Alcazar is a PvP utility plugin, inspired by DevotedPvP.
 website: https://oko.moe
-version: 0.1.0
+version: 0.2.0
 main: moe.oko.alcazar.Alcazar
 api-version: 1.17
 commands:
