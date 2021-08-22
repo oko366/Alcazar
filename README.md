@@ -1,5 +1,5 @@
 # Alcazar
-Alcazar is a simple PvP utility plugin for Spigot servers.
+Alcazar is a simple PvP utility plugin for Paper servers.
 ### Heads up! This software is a work-in-progress!
 
 ## Features
