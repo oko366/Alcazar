@@ -7,6 +7,12 @@ main: moe.oko.alcazar.Alcazar
 api-version: 1.17
 commands:
   inv:
+    permission: alcazar.inventory
     description: inv.
     usage: /<command>
     aliases: [ inventory ]
+permissions:
+  alcazar.admin:
+    default: op
+  alcazar.inventory:
+    default: true
