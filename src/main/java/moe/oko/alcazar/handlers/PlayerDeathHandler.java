@@ -22,11 +22,11 @@ public class PlayerDeathHandler {
      * Alice [0⚗] was killed by Bob [16⚗] using Diamond Sword.
      */
     public static void handlePlayerDeath(Player player) {
-        // TODO: REDO ALL OF THIS. IT IS VERY LATE
         final char potion = '\u2697';
         final char info = '\u2139';
         final short deathPotions = countPotions(player.getInventory());
 
+        //TODO: cleanup
         final TextComponent deadMessage = Component.text()
                 .append(player.displayName())
                 .hoverEvent(
@@ -34,8 +34,7 @@ public class PlayerDeathHandler {
                                 .append(player.displayName())
                 )
                 .clickEvent(
-                        // TODO: make this trigger WhoIs command instead.
-                        ClickEvent.openUrl("https://namemc.com/profile/" + player.getUniqueId())
+                        ClickEvent.runCommand("/whois " + player.getName())
                 )
                 .build();
 
@@ -64,8 +63,7 @@ public class PlayerDeathHandler {
                                     .append(killer.displayName())
                     )
                     .clickEvent(
-                            // TODO: make this trigger whois command instead.
-                            ClickEvent.openUrl("https://namemc.com/profile/" + killer.getUniqueId())
+                            ClickEvent.runCommand("/whois " + killer.getName())
                     )
                     .build();
 
@@ -82,19 +80,14 @@ public class PlayerDeathHandler {
                     .append(Component.text("]"))
                     .build();
 
-            TextComponent itemMessage = Component.text()
-                    .content(" using ")
-                    .append(weapon.displayName())
-                    .hoverEvent(weapon.asHoverEvent())
-                    .build();
+            TextComponent itemMessage = Component.text("");
 
             // If null, default to "their hands".
             // Use custom item name when applicable.
             if (weapon.getType() == Material.AIR) {
                 itemMessage = Component.text().content(" using their hands").build();
-            }
-            if (weapon.getItemMeta().getDisplayName().equals("")) {
-                itemMessage = Component.text().build();
+            } else if (weapon.getItemMeta().hasDisplayName()) {
+                itemMessage = Component.text(" using ").append(weapon.displayName());
             }
 
             final TextComponent msg = Component.text()
