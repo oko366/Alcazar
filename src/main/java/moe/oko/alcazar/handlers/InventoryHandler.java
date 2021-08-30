@@ -28,7 +28,7 @@ public class InventoryHandler {
         String serializedArmor = serializedPlayerInventory[1];
 
         if(ASQL.addNewInventory(UUID, invName, serializedInv, serializedArmor)){
-            player.sendMessage( PrefixHandler.System + "Saved " + invName + "!");
+            player.sendMessage("Saved " + invName + "!");
             return true;
         } else {
             // Failed to execute maybe put an error message here.
@@ -55,7 +55,7 @@ public class InventoryHandler {
         player.getInventory().setContents(inventory);
         player.getInventory().setArmorContents(armor);
         player.updateInventory();
-        player.sendMessage( PrefixHandler.System + "Loaded " + invName + "!");
+        player.sendMessage("Loaded " + invName + "!");
 
         return true;
     }

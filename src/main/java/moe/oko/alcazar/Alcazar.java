@@ -1,13 +1,17 @@
 package moe.oko.alcazar;
 
 import moe.oko.alcazar.commands.InventoryCommand;
+import moe.oko.alcazar.commands.WhoisCommand;
 import moe.oko.alcazar.database.ASQL;
-import moe.oko.alcazar.events.MessageOfTheDayListener;
 import moe.oko.alcazar.events.PlayerDeathListener;
-import moe.oko.alcazar.handlers.PrefixHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Alcazar extends JavaPlugin {
+
+    private static Alcazar instance;
+    public static Alcazar getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
@@ -16,20 +20,20 @@ public class Alcazar extends JavaPlugin {
 
         // Register events
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
-        getServer().getPluginManager().registerEvents(new MessageOfTheDayListener(), this);
 
-        getServer().getConsoleSender().sendMessage(PrefixHandler.Plugin + "Events loaded.");
+        getServer().getConsoleSender().sendMessage("Events loaded.");
 
         // Register commands
         this.getCommand("inv").setExecutor(new InventoryCommand());
-        getServer().getConsoleSender().sendMessage(PrefixHandler.Plugin + "Commands loaded.");
+        this.getCommand("whois").setExecutor(new WhoisCommand());
+        getServer().getConsoleSender().sendMessage("Commands loaded.");
 
-        getServer().getConsoleSender().sendMessage(PrefixHandler.Plugin + "Alcazar loaded.");
+        getServer().getConsoleSender().sendMessage("Alcazar loaded.");
     }
 
     @Override
     public void onDisable() {
-        getServer().getConsoleSender().sendMessage(PrefixHandler.Plugin + "Shutting down.");
+        getServer().getConsoleSender().sendMessage("Shutting down.");
     }
 
 }

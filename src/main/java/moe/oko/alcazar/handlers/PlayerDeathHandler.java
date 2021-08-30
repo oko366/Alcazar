@@ -96,10 +96,24 @@ public class PlayerDeathHandler {
             if (weapon.getItemMeta().getDisplayName().equals("")) {
                 itemMessage = Component.text().build();
             }
-            Bukkit.broadcast(deadMessage.append(deathPotionMessage).append(Component.text(" was killed by ")).append(killerMessage).append(killerPotionMessage).append(itemMessage));
+
+            final TextComponent msg = Component.text()
+                    .content(" was killed by ")
+                    .hoverEvent(Component.text(""))
+                    .clickEvent(ClickEvent.openUrl(""))
+                    .build();
+
+            Bukkit.broadcast(deadMessage.append(deathPotionMessage).append(msg).append(killerMessage).append(killerPotionMessage).append(itemMessage));
         }
         else {
-            Bukkit.broadcast(deadMessage.append(deathPotionMessage).append(Component.text(" died.")));
+
+            final TextComponent msg = Component.text()
+                    .content(" died.")
+                    .hoverEvent(Component.text(""))
+                    .clickEvent(ClickEvent.openUrl(""))
+                    .build();
+
+            Bukkit.broadcast(deadMessage.append(deathPotionMessage).append(msg));
         }
     }
 

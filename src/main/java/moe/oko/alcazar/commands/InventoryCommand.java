@@ -15,13 +15,10 @@ public class InventoryCommand implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage("You must be a player to run this command!");
-            return false;
-        }
-        String help = "/inv <save/load> <name>";
-        if (args.length == 0) {
-            // send help message
-            sender.sendMessage(help);
             return true;
+        }
+        if (args.length == 0) {
+            return false;
         }
         switch (args[0].toLowerCase()) {
             case "save" -> InventoryHandler.save((Player) sender, args[1]);
@@ -34,7 +31,7 @@ public class InventoryCommand implements TabExecutor {
                 }
             }
 
-            default -> sender.sendMessage(help);
+            default -> {return false;}
         }
 
         // If the player (or console) uses our command correct, we can return true
