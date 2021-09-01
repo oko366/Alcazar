@@ -1,11 +1,13 @@
 package moe.oko.alcazar.database;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ASQL {
     static Connection connection = null;
-    // If you need help dm me
-    private static String connectionString = "";
+    // Sets the jdbc connection string
+    private static final String connectionString = "";
     public static void initConnection() {
         if (connection != null) {
             System.err.println("[DATABASE] WARN | The moe.oko.alcazar.database.ASQL.initConnection has already ran. A database connection was found.");
@@ -19,6 +21,13 @@ public class ASQL {
         }
     }
 
+    /**
+     * Counts the number of inventories created by a player.
+     *
+     * @param UUID UUID of a player
+     * @return The number of saved inventories for the player.
+     */
+    @Deprecated
     public static int countPlayerInventories(String UUID){
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM inventory_table WHERE uuid=?");
@@ -58,11 +67,10 @@ public class ASQL {
         return false;
     }
 
-    public static String[] getInv(String UUID, String invName){
+    public static String[] getInv(String invName){
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM inventory_table WHERE uuid=? AND inventory_name=?");
-            preparedStatement.setString(1, UUID);
-            preparedStatement.setString(2, invName);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM inventory_table WHERE inventory_name=?");
+            preparedStatement.setString(1, invName);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 String inventory = resultSet.getString("si");
@@ -76,6 +84,32 @@ public class ASQL {
             System.err.println(e);
         }
 
+        return null;
+    }
+
+    /**
+     * Generates a List containing all saved inventories.
+     *
+     * @return a list with all entries from column inventory_name.
+     */
+    public static List<String> getInvNames(){
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT inventory_name FROM inventory_table");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                List<String> names = new ArrayList<>();
+                names.add(resultSet.getString("inventory_name"));
+                while(resultSet.next()){
+                    names.add(resultSet.getString("inventory_name"));
+                }
+                preparedStatement.close();
+                resultSet.close();
+                return names;
+            }
+        } catch (SQLException e) {
+            System.err.println("[DATABASE] ERROR | The moe.oko.alcazar.database.ASQL.getInvNames function failed to execute successfully.");
+            System.err.println(e);
+        }
         return null;
     }
 

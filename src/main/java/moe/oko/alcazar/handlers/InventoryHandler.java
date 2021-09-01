@@ -20,7 +20,8 @@ public class InventoryHandler {
         PlayerInventory playerInv = player.getInventory();
 
         // Check if player has too many inventories
-        if(ASQL.countPlayerInventories(UUID) >= 5) return false;
+        // TODO: toggle in config
+        // if(ASQL.countPlayerInventories(UUID) >= 5) return false;
 
         // If not serialize the players inventory
         String[] serializedPlayerInventory = playerInventoryToBase64(playerInv);
@@ -39,7 +40,7 @@ public class InventoryHandler {
 
     public static boolean load(Player player, String invName) throws IOException {
         String UUID = player.getUniqueId().toString();
-        String[] serializedPlayerInventory = ASQL.getInv(UUID, invName);
+        String[] serializedPlayerInventory = ASQL.getInv(invName);
 
         if(serializedPlayerInventory == null){
             return false;
@@ -78,8 +79,8 @@ public class InventoryHandler {
             dataOutput.writeInt(items.length);
 
             // Save every element in the list
-            for (int i = 0; i < items.length; i++) {
-                dataOutput.writeObject(items[i]);
+            for (ItemStack item : items) {
+                dataOutput.writeObject(item);
             }
 
             // Serialize that array

@@ -1,5 +1,6 @@
 package moe.oko.alcazar.commands;
 
+import moe.oko.alcazar.database.ASQL;
 import moe.oko.alcazar.handlers.InventoryHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -40,10 +41,10 @@ public class InventoryCommand implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-        // TODO: make onTabComplete not complete insanity
-        if (args.length == 1) {
-            return List.of("load", "save");
-        }
-        return List.of("");
+        return switch (args.length) {
+            case 1 -> List.of("load", "save");
+            case 2 -> ASQL.getInvNames(); // pretty sure I shouldn't be calling this every tabcomplete
+            default -> null;
+        };
     }
 }
