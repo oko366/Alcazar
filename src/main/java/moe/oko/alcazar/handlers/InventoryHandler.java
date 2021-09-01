@@ -13,10 +13,11 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 public class InventoryHandler {
-    public static boolean save(Player player, String invName){
+    public static void save(Player player, String invName){
         String UUID = player.getUniqueId().toString();
         PlayerInventory playerInv = player.getInventory();
 
@@ -31,20 +32,17 @@ public class InventoryHandler {
 
         if(ASQL.addNewInventory(UUID, invName, serializedInv, serializedArmor)){
             player.sendMessage("Saved " + invName + "!");
-            return true;
         } else {
-            // Failed to execute maybe put an error message here.
-            return false;
+            player.sendMessage("Could not save " + invName + " as inventory");
         }
 
     }
 
-    public static boolean load(Player player, String invName) throws IOException {
-        String UUID = player.getUniqueId().toString();
+    public static void load(Player player, String invName) throws IOException {
         String[] serializedPlayerInventory = ASQL.getInv(invName);
 
         if(serializedPlayerInventory == null){
-            return false;
+            player.sendMessage("Could not load inventory " + invName);
         }
 
         String serializedInv = serializedPlayerInventory[0];
@@ -59,23 +57,21 @@ public class InventoryHandler {
         player.updateInventory();
         player.sendMessage("Loaded " + invName + "!");
 
-        return true;
     }
 
-    public static boolean remove(Player player, String invName) {
+    public static void remove(Player player, String invName) {
         if (ASQL.removeInventory(invName)) {
             player.sendMessage("Removed " + invName + "!");
-            return true;
+        } else {
+            // This probably won't ever trigger since it will always respond with an OK.
+            player.sendMessage("Could not remove " + invName);
         }
-        player.sendMessage("Could not remove " + invName);
-        return false;
     }
 
-    public static boolean list(Player player) {
+    public static void list(Player player) {
         List<String> inventories = ASQL.getInvNames();
-        if (inventories == null) { inventories = List.of(""); }
+        if (inventories == null) { inventories = Collections.emptyList(); }
         player.sendMessage("There are " + inventories.size() + " saved inventories: " + String.join(", ", inventories));
-        return true;
     }
 
     public static String[] playerInventoryToBase64(PlayerInventory playerInventory) throws IllegalStateException {
@@ -125,25 +121,6 @@ public class InventoryHandler {
             return Base64Coder.encodeLines(outputStream.toByteArray());
         } catch (Exception e) {
             throw new IllegalStateException("Unable to save item stacks.", e);
-        }
-    }
-
-    public static Inventory fromBase64(String data) throws IOException {
-        try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
-            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-            Inventory inventory = Bukkit.getServer().createInventory(null, dataInput.readInt());
-
-
-            // Read the serialized inventory
-            for (int i = 0; i < inventory.getSize(); i++) {
-                inventory.setItem(i, (ItemStack) dataInput.readObject());
-            }
-
-            dataInput.close();
-            return inventory;
-        } catch (ClassNotFoundException e) {
-            throw new IOException("Unable to decode class type.", e);
         }
     }
 
