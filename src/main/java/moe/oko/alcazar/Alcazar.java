@@ -15,6 +15,10 @@ public class Alcazar extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        // Manage config
+        this.saveDefaultConfig();
+
         // Connect to database
         ASQL.initConnection();
 

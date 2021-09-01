@@ -1,20 +1,20 @@
 package moe.oko.alcazar.database;
 
+import moe.oko.alcazar.Alcazar;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ASQL {
     static Connection connection = null;
-    // Sets the jdbc connection string
-    private static final String connectionString = "";
     public static void initConnection() {
         if (connection != null) {
             System.err.println("[DATABASE] WARN | The moe.oko.alcazar.database.ASQL.initConnection has already ran. A database connection was found.");
             return;
         }
         try {
-            connection = DriverManager.getConnection(connectionString);
+            connection = DriverManager.getConnection(Alcazar.getPlugin(Alcazar.class).getConfig().getString("sql"));
             System.out.println("[DATABASE] SUCCESS | Connection established.");
         } catch (SQLException e) {
             System.err.println("[DATABASE] ERROR | The moe.oko.alcazar.database.ASQL.initConnection failed to execute!");
