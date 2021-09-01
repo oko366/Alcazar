@@ -61,6 +61,14 @@ public class InventoryHandler {
         return true;
     }
 
+    public static boolean remove(Player player, String invName) {
+        if (ASQL.removeInventory(invName)) {
+            player.sendMessage("Removed " + invName + "!");
+            return true;
+        }
+        player.sendMessage("Could not remove " + invName);
+        return false;
+    }
 
     public static String[] playerInventoryToBase64(PlayerInventory playerInventory) throws IllegalStateException {
         // Get the main content part, this doesn't return the armor

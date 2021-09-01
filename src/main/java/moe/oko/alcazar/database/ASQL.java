@@ -88,6 +88,25 @@ public class ASQL {
     }
 
     /**
+     * Removes an inventory from the database.
+     *
+     * @param name The name of the inventory to be deleted.
+     */
+    public static Boolean removeInventory(String name) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM inventory_table WHERE inventory_name=?");
+            preparedStatement.setString(1, name);
+            preparedStatement.execute();
+            preparedStatement.close();
+            return true;
+        } catch (SQLException exception) {
+            System.err.println("[DATABASE] ERROR | The moe.oko.alcazar.database.ASQL.removeInventory function failed to execute successfully.");
+            System.err.println(exception);
+        }
+        return false;
+    }
+
+    /**
      * Generates a List containing all saved inventories.
      *
      * @return a list with all entries from column inventory_name.
