@@ -31,6 +31,7 @@ public class InventoryCommand implements TabExecutor {
                 }
             }
             case "remove" -> InventoryHandler.remove((Player) sender, args[1]);
+            case "list" -> InventoryHandler.list((Player) sender);
             default -> {return false;}
         }
 
@@ -41,7 +42,7 @@ public class InventoryCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         return switch (args.length) {
-            case 1 -> List.of("load", "save", "remove");
+            case 1 -> List.of("load", "save", "remove", "list");
             case 2 -> ASQL.getInvNames(); // pretty sure I shouldn't be calling this every tabcomplete
             default -> null;
         };

@@ -13,6 +13,7 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class InventoryHandler {
     public static boolean save(Player player, String invName){
@@ -68,6 +69,13 @@ public class InventoryHandler {
         }
         player.sendMessage("Could not remove " + invName);
         return false;
+    }
+
+    public static boolean list(Player player) {
+        List<String> inventories = ASQL.getInvNames();
+        if (inventories == null) { inventories = List.of(""); }
+        player.sendMessage("There are " + inventories.size() + " saved inventories: " + String.join(", ", inventories));
+        return true;
     }
 
     public static String[] playerInventoryToBase64(PlayerInventory playerInventory) throws IllegalStateException {
