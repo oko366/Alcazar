@@ -8,9 +8,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Alcazar extends JavaPlugin {
 
-    private static Alcazar instance;
-    public static Alcazar getInstance() {
-        return instance;
+    public static Alcazar instance;
+    public Alcazar() {
+        instance = this;
     }
 
     @Override

@@ -1,1 +1,5 @@
 sql: ''
+inventories:
+  limit:
+    enabled: false
+    maximum: 5

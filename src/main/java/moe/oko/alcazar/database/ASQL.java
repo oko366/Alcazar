@@ -1,10 +1,10 @@
 package moe.oko.alcazar.database;
 
-import moe.oko.alcazar.Alcazar;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static moe.oko.alcazar.Alcazar.instance;
 
 public class ASQL {
     static Connection connection = null;
@@ -14,7 +14,7 @@ public class ASQL {
             return;
         }
         try {
-            connection = DriverManager.getConnection(Alcazar.getPlugin(Alcazar.class).getConfig().getString("sql"));
+            connection = DriverManager.getConnection(instance.getConfig().getString("sql"));
             System.out.println("[DATABASE] SUCCESS | Connection established.");
         } catch (SQLException e) {
             System.err.println("[DATABASE] ERROR | The moe.oko.alcazar.database.ASQL.initConnection failed to execute!");
@@ -27,21 +27,16 @@ public class ASQL {
      * @param UUID UUID of a player
      * @return The number of saved inventories for the player.
      */
-    @Deprecated
     public static int countPlayerInventories(String UUID){
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM inventory_table WHERE uuid=?");
             preparedStatement.setString(1, UUID);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                int count = resultSet.getMetaData().getColumnCount();
-                preparedStatement.close();
-                resultSet.close();
-                return count;
-            }
+            resultSet.next();
+            int count = resultSet.getInt(1);
             preparedStatement.close();
             resultSet.close();
-            return 0;
+            return count;
 
         } catch (SQLException exception) {
             System.err.println("[DATABASE] ERROR | The moe.oko.alcazar.database.ASQL.countPlayerInventories function failed to execute successfully.");

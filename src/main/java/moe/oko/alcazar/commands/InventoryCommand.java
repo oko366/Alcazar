@@ -2,6 +2,7 @@ package moe.oko.alcazar.commands;
 
 import moe.oko.alcazar.database.ASQL;
 import moe.oko.alcazar.handlers.InventoryHandler;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -26,8 +27,8 @@ public class InventoryCommand implements TabExecutor {
             case "load" -> {
                 try {
                     InventoryHandler.load((Player) sender, args[1]);
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
+                } catch (IOException e) {
+                    sender.sendMessage(ChatColor.RED + "No inventory was found");
                 }
             }
             case "remove" -> InventoryHandler.remove((Player) sender, args[1]);

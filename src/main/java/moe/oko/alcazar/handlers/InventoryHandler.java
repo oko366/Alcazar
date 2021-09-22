@@ -1,7 +1,7 @@
 package moe.oko.alcazar.handlers;
 
 import moe.oko.alcazar.database.ASQL;
-import org.bukkit.Bukkit;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -16,14 +16,20 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import static moe.oko.alcazar.Alcazar.instance;
+
 public class InventoryHandler {
     public static void save(Player player, String invName){
         String UUID = player.getUniqueId().toString();
         PlayerInventory playerInv = player.getInventory();
 
         // Check if player has too many inventories
-        // TODO: toggle in config
-        // if(ASQL.countPlayerInventories(UUID) >= 5) return false;
+        if (instance.getConfig().getBoolean("inventories.limit.enabled")) {
+            if(ASQL.countPlayerInventories(UUID) >= instance.getConfig().getInt("inventories.limit.maximum")) {
+                player.sendMessage("Could not save " + invName + " as inventory");
+                return;
+            }
+        }
 
         // If not serialize the players inventory
         String[] serializedPlayerInventory = playerInventoryToBase64(playerInv);
@@ -32,17 +38,15 @@ public class InventoryHandler {
 
         if(ASQL.addNewInventory(UUID, invName, serializedInv, serializedArmor)){
             player.sendMessage("Saved " + invName + "!");
-        } else {
-            player.sendMessage("Could not save " + invName + " as inventory");
         }
-
     }
 
     public static void load(Player player, String invName) throws IOException {
         String[] serializedPlayerInventory = ASQL.getInv(invName);
 
         if(serializedPlayerInventory == null){
-            player.sendMessage("Could not load inventory " + invName);
+            player.sendMessage(ChatColor.RED + "Unknown inventory '" + invName + "'");
+            return;
         }
 
         String serializedInv = serializedPlayerInventory[0];

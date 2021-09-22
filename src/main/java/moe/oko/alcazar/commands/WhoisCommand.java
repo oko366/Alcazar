@@ -2,7 +2,6 @@ package moe.oko.alcazar.commands;
 
 import com.bobacadodl.imgmessage.ImageChar;
 import com.bobacadodl.imgmessage.ImageMessage;
-import moe.oko.alcazar.Alcazar;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -17,6 +16,8 @@ import java.net.URL;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+import static moe.oko.alcazar.Alcazar.instance;
+
 public class WhoisCommand implements CommandExecutor {
 
     private static void lookup (Player player, CommandSender sender) {
@@ -28,7 +29,7 @@ public class WhoisCommand implements CommandExecutor {
             head = ImageIO.read(playerHead);
         } catch (IOException e) {
             try {
-                head = ImageIO.read(Alcazar.getInstance().getResource("missing.png"));
+                head = ImageIO.read(instance.getResource("missing.png"));
             } catch (IOException e2) {
                 e2.printStackTrace();
             }
