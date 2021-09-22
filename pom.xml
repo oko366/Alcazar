@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>moe.oko</groupId>
     <artifactId>Alcazar</artifactId>
-    <version>0.2.0</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>Alcazar</name>
