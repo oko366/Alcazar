@@ -1,7 +1,8 @@
-package moe.oko.alcazar.commands;
+package moe.oko.alcazar.command;
 
 import com.bobacadodl.imgmessage.ImageChar;
 import com.bobacadodl.imgmessage.ImageMessage;
+import moe.oko.alcazar.Alcazar;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -16,20 +17,22 @@ import java.net.URL;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import static moe.oko.alcazar.Alcazar.instance;
-
 public class WhoisCommand implements CommandExecutor {
+    private Alcazar plugin;
+    public WhoisCommand(Alcazar plugin) {
+        this.plugin = plugin;
+    }
 
-    private static void lookup (Player player, CommandSender sender) {
+    private void lookup (Player player, CommandSender sender) {
 
         // Fetch player head from a generic api
         BufferedImage head = null;
         try {
-            URL playerHead = new URL("https://crafthead.net/helm/" + player.getUniqueId() + "/8.png");
+            var playerHead = new URL("https://crafthead.net/helm/" + player.getUniqueId() + "/8.png");
             head = ImageIO.read(playerHead);
         } catch (IOException e) {
             try {
-                head = ImageIO.read(instance.getResource("missing.png"));
+                head = ImageIO.read(plugin.getResource("missing.png"));
             } catch (IOException e2) {
                 e2.printStackTrace();
             }

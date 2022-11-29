@@ -1,5 +1,17 @@
-sql: ''
+sql:
+  host: "localhost"
+  port: 3306
+  database: "alcazar"
+  username: ""
+  password: ""
+  poolSize: 2
+  connectionTimeout: 10000
+  idleTimeout: 600000
+  maxLifetime: 7200000
 inventories:
   limit:
     enabled: false
     maximum: 5
+welcome:
+  # Supports MiniMessage (https://docs.adventure.kyori.net/minimessage/format.html)
+  welcomeMessage: "<yellow>Welcome to the server!</yellow>"

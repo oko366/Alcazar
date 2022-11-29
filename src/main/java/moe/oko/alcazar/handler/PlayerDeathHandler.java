@@ -1,4 +1,4 @@
-package moe.oko.alcazar.handlers;
+package moe.oko.alcazar.handler;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

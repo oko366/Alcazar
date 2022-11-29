@@ -1,38 +1,32 @@
 package moe.oko.alcazar;
 
-import moe.oko.alcazar.commands.InventoryCommand;
-import moe.oko.alcazar.commands.WhoisCommand;
-import moe.oko.alcazar.database.ASQL;
-import moe.oko.alcazar.events.PlayerDeathListener;
+import moe.oko.alcazar.command.InventoryCommand;
+import moe.oko.alcazar.handler.InventoryHandler;
+import moe.oko.alcazar.listener.PlayerDeathListener;
+import moe.oko.alcazar.listener.PlayerJoinListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Alcazar extends JavaPlugin {
-
-    public static Alcazar instance;
-    public Alcazar() {
-        instance = this;
-    }
+    private AlcazarConfig config;
+    private AlcazarDB db;
+    private InventoryHandler inventoryHandler;
 
     @Override
     public void onEnable() {
-
-        // Manage config
         this.saveDefaultConfig();
+        this.reloadConfig();
+        config = new AlcazarConfig(this.getConfig());
+        db = config.createDB(this);
 
-        // Connect to database
-        ASQL.initConnection();
+        inventoryHandler = new InventoryHandler(this, db);
 
         // Register events
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
-
-        getServer().getConsoleSender().sendMessage("Events loaded.");
-
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(config.getWelcomeMessage()), this);
         // Register commands
-        this.getCommand("inv").setExecutor(new InventoryCommand());
-        this.getCommand("whois").setExecutor(new WhoisCommand());
-        getServer().getConsoleSender().sendMessage("Commands loaded.");
+        this.getCommand("inv").setExecutor(new InventoryCommand(inventoryHandler));
 
-        getServer().getConsoleSender().sendMessage("Alcazar loaded.");
+        info("Alcazar loaded.");
     }
 
     @Override
@@ -40,4 +34,8 @@ public class Alcazar extends JavaPlugin {
         getServer().getConsoleSender().sendMessage("Shutting down.");
     }
 
+    // Logging methods
+    public void info(String str) { getLogger().info(str); }
+    public void warning(String str) { getLogger().warning(str); }
+    public void severe(String str) { getLogger().severe(str); }
 }

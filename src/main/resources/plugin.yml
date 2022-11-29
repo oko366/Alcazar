@@ -2,23 +2,17 @@ name: Alcazar
 author: oko
 description: Alcazar is a PvP utility plugin, inspired by DevotedPvP.
 website: https://oko.moe
-version: 1.0.0
+version: 2.0.0-alpha.1
 main: moe.oko.alcazar.Alcazar
-api-version: 1.17
+api-version: 1.18
 commands:
   inv:
     permission: alcazar.inventory
     description: inv.
     usage: /<command> <save/load> <name>
     aliases: [ inventory ]
-  whois:
-    permission: alcazar.whois
-    description: Look up information about a player.
-    usage: /<command> <name>
 permissions:
   alcazar.admin:
     default: op
-  alcazar.whois:
-    default: true
   alcazar.inventory:
     default: true
