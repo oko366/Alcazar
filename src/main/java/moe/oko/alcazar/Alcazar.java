@@ -2,6 +2,7 @@ package moe.oko.alcazar;
 
 import moe.oko.alcazar.command.InventoryCommand;
 import moe.oko.alcazar.handler.InventoryHandler;
+import moe.oko.alcazar.handler.DeathMessageHandler;
 import moe.oko.alcazar.listener.PlayerDeathListener;
 import moe.oko.alcazar.listener.PlayerJoinListener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,6 +11,7 @@ public class Alcazar extends JavaPlugin {
     private AlcazarConfig config;
     private AlcazarDB db;
     private InventoryHandler inventoryHandler;
+    private DeathMessageHandler deathMessageHandler;
 
     @Override
     public void onEnable() {
@@ -19,9 +21,10 @@ public class Alcazar extends JavaPlugin {
         db = config.createDB(this);
 
         inventoryHandler = new InventoryHandler(this, db);
+        deathMessageHandler = new DeathMessageHandler();
 
         // Register events
-        getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeathListener(deathMessageHandler), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(config.getWelcomeMessage()), this);
         // Register commands
         this.getCommand("inv").setExecutor(new InventoryCommand(inventoryHandler));
