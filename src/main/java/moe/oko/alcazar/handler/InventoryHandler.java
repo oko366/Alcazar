@@ -46,7 +46,7 @@ public class InventoryHandler {
         var serializedArmor = serializedPlayerInventory[1];
 
         if (db.addNewInventory(UUID, invName, serializedInv, serializedArmor)) {
-            plugin.info("%s has saved inventory %s".formatted(player, invName));
+            plugin.info("%s has saved inventory %s".formatted(player.getName(), invName));
             updateCache();
             return true;
         }
@@ -74,7 +74,7 @@ public class InventoryHandler {
             player.getInventory().setContents(inventory);
             player.getInventory().setArmorContents(armor);
             player.updateInventory();
-            plugin.info("%s was given inventory %s".formatted(player, invName));
+            plugin.info("%s was given inventory %s".formatted(player.getName(), invName));
             updateCache();
             return true;
         } catch (IOException e) { return false; }
@@ -89,9 +89,9 @@ public class InventoryHandler {
     public boolean remove(@Nullable Player player, String invName) {
         if (db.removeInventory(invName)) {
             if (player != null)
-                plugin.info("%s has removed inventory %s".formatted(player, invName));
+                plugin.info("%s has removed inventory %s".formatted(player.getName(), invName));
             var msg = player != null
-                    ? "%s has removed inventory %s".formatted(player, invName)
+                    ? "%s has removed inventory %s".formatted(player.getName(), invName)
                     : "inventory %s was removed".formatted(invName);
             plugin.info(msg);
             updateCache();
