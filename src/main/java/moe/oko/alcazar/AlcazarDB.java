@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import moe.oko.alcazar.model.DatabaseCredentials;
+import org.bukkit.entity.Player;
+import org.bukkit.Location;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -44,6 +46,8 @@ public class AlcazarDB {
         try {
             connection.prepareStatement("CREATE TABLE IF NOT EXISTS `inventories`" +
                     "(uuid VARCHAR(128), name VARCHAR(64) UNIQUE, si TEXT, sa TEXT);").execute();
+            connection.prepareStatement("CREATE TABLE IF NOT EXISTS `warps`" +
+                    "(uuid VARCHAR(128), name VARCHAR(64), location TEXT);").execute();
         } catch (SQLException e) {
             plugin.severe("Failed to initialize SQL tables (permissions issue?)");
             e.printStackTrace();
@@ -89,6 +93,23 @@ public class AlcazarDB {
         }
     }
 
+
+    public boolean addNewWarp(String UUID, String name, String base64Location) {
+        try {
+            var ps = connection.prepareStatement("REPLACE INTO warps(uuid, name, location) VALUES (?, ?, ?)");
+            ps.setString(1, UUID);
+            ps.setString(2, name);
+            ps.setString(3, base64Location);
+            ps.execute();
+            ps.close();
+            return true;
+        } catch (SQLException e) {
+            plugin.severe("Unable to add warp %s to database.".formatted(name));
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public String[] getInv(String name){
         try {
             var ps = connection.prepareStatement("SELECT * FROM inventories WHERE name=?");
@@ -107,6 +128,23 @@ public class AlcazarDB {
         return null;
     }
 
+    public String getWarp(String name){
+        try {
+            var ps = connection.prepareStatement("SELECT * FROM warps WHERE name=?");
+            ps.setString(1, name);
+            var rs = ps.executeQuery();
+            if (rs.next()) {
+                var location = rs.getString("location");
+                ps.close();
+                rs.close();
+                return location;
+            }
+        } catch (SQLException e) {
+            plugin.severe("Unable to get warp %s from database.".formatted(name));
+        }
+        return null;
+    }
+
     /**
      * Removes an inventory from the database.
      *
@@ -121,6 +159,20 @@ public class AlcazarDB {
             return true;
         } catch (SQLException exception) {
             plugin.severe("Unable to remove inventory %s.".formatted(name));
+            return false;
+        }
+    }
+    
+
+    public boolean removeWarp(String name) {
+        try {
+            var ps = connection.prepareStatement("DELETE FROM warps WHERE name=?");
+            ps.setString(1, name);
+            ps.execute();
+            ps.close();
+            return true;
+        } catch (SQLException exception) {
+            plugin.severe("Unable to remove warp %s.".formatted(name));
             return false;
         }
     }
@@ -146,6 +198,26 @@ public class AlcazarDB {
             }
         } catch (SQLException e) {
             plugin.severe("Unable to get the inventory list.");
+        }
+        return null;
+    }
+
+    public List<String> getAllWarpNames(){
+        try {
+            var ps = connection.prepareStatement("SELECT name FROM warps");
+            var rs = ps.executeQuery();
+            if (rs.next()) {
+                List<String> names = new ArrayList<>();
+                names.add(rs.getString("name"));
+                while(rs.next()){
+                    names.add(rs.getString("name"));
+                }
+                ps.close();
+                rs.close();
+                return names;
+            }
+        } catch (SQLException e) {
+            plugin.severe("Unable to get the warp list.");
         }
         return null;
     }
