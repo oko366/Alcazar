@@ -4,6 +4,9 @@ import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import moe.oko.alcazar.command.InventoryCommand;
 import moe.oko.alcazar.handler.InventoryHandler;
 import moe.oko.alcazar.handler.DeathMessageHandler;
+import moe.oko.alcazar.command.WarpCommand;
+import moe.oko.alcazar.command.WarpsCommand;
+import moe.oko.alcazar.handler.WarpHandler;
 import moe.oko.alcazar.listener.PlayerDeathListener;
 import moe.oko.alcazar.listener.PlayerJoinListener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,6 +15,8 @@ public class Alcazar extends JavaPlugin {
     private AlcazarConfig config;
     private AlcazarDB db;
     private InventoryHandler inventoryHandler;
+    private WarpHandler warpHandler;
+
     private DeathMessageHandler deathMessageHandler;
     private HolographicDisplaysAPI holographicDisplaysAPI;
 
@@ -24,6 +29,7 @@ public class Alcazar extends JavaPlugin {
         db = config.createDB(this);
 
         inventoryHandler = new InventoryHandler(this, db);
+        warpHandler = new WarpHandler(this, db);
         deathMessageHandler = new DeathMessageHandler();
         holographicDisplaysAPI = getServer().getPluginManager().isPluginEnabled("HolographicDisplays")
                 ? HolographicDisplaysAPI.get(this)
@@ -35,6 +41,8 @@ public class Alcazar extends JavaPlugin {
 
         // Register commands
         this.getCommand("inv").setExecutor(new InventoryCommand(inventoryHandler));
+        this.getCommand("warp").setExecutor(new WarpCommand(warpHandler));
+        this.getCommand("warps").setExecutor(new WarpsCommand(warpHandler));
 
         info("Alcazar loaded.");
     }
