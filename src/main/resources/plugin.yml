@@ -12,6 +12,16 @@ commands:
     description: inv.
     usage: /<command> <save/load> <name>
     aliases: [ inventory ]
+  warp:
+    permission: alcazar.warp
+    description: warp.
+    usage: /<command> <name>
+    aliases: [ ]
+  warps:
+    permission: alcazar.warp.management
+    description: warps.
+    usage: /<command> <save/remove> <name>
+    aliases: [ ]
 permissions:
   alcazar.admin:
     default: op
