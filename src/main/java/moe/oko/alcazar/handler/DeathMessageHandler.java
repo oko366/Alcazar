@@ -42,17 +42,17 @@ public class DeathMessageHandler {
 
     /**
      * Generates a list of the requested potion counts on a player.
-     * @param player
+     * @param player the player to observe.
      * @param potionTypes 1 or more PotionTypes
      * @return a stylized Component.
      * @apiNote make sure the requested PotionType has a corresponding PotionColor.
      */
-    private Component getPotionInfo(Player player, @Nonnull PotionType... potionTypes) {
+    public Component getPotionInfo(Player player, @Nonnull PotionType... potionTypes) {
         final var potionComponent = Component.text().content("[");
         byte i = 1;
         for (PotionType potionType : potionTypes) {
             potionComponent.append(Component.text(countPotions(player.getInventory(), potionType)))
-                    .append(Component.text( "\u2697")
+                    .append(Component.text( "⚗")
                             .color(TextColor.color(PotionColor.getColor(potionType))));
                     if (i++ != potionTypes.length)
                         potionComponent.append(Component.text(", "));

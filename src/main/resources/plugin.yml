@@ -5,6 +5,7 @@ website: https://oko.moe
 version: 2.0.0-alpha.1
 main: moe.oko.alcazar.Alcazar
 api-version: 1.18
+softdepend: [HolographicDisplays]
 commands:
   inv:
     permission: alcazar.inventory
