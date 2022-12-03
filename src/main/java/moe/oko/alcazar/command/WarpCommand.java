@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class WarpCommand implements TabExecutor {
-    WarpHandler handler;
+    final WarpHandler handler;
 
     public WarpCommand (WarpHandler warpHandler) { handler = warpHandler; }
 

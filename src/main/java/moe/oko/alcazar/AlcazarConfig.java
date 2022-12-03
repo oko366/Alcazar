@@ -4,7 +4,7 @@ import moe.oko.alcazar.model.DatabaseCredentials;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class AlcazarConfig {
-    private FileConfiguration config;
+    private final FileConfiguration config;
     public AlcazarConfig(FileConfiguration config) { this.config = config; }
 
     public String getWelcomeMessage() { return config.getString("welcome.welcomeMessage"); }

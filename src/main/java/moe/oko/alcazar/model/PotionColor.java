@@ -9,7 +9,7 @@ public enum PotionColor {
     REGEN(13458352),
     FIRE_RESISTANCE(14915649),
     DEFAULT(3355443);
-    private int color;
+    private final int color;
 
     PotionColor(int color) { this.color = color; }
 

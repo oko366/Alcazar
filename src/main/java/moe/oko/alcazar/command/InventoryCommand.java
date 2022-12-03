@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class InventoryCommand implements TabExecutor {
-    InventoryHandler inv;
+    final InventoryHandler inv;
 
     public InventoryCommand (InventoryHandler inventoryHandler) { inv = inventoryHandler; }
 

@@ -11,7 +11,6 @@ import java.util.List;
 
 public class AlcazarDB {
     private final Alcazar plugin;
-    private HikariDataSource dataSource;
     private Connection connection = null;
 
     public AlcazarDB(Alcazar plugin, DatabaseCredentials credentials) {
@@ -27,7 +26,7 @@ public class AlcazarDB {
 
         if (!Strings.isNullOrEmpty(credentials.password()))
             config.setPassword(credentials.password());
-        this.dataSource = new HikariDataSource(config);
+        var dataSource = new HikariDataSource(config);
 
         try {
             connection = dataSource.getConnection();
@@ -35,7 +34,6 @@ public class AlcazarDB {
         } catch (SQLException e) {
             plugin.severe("Unable to connect to database.");
             e.printStackTrace();
-            this.dataSource = null;
         }
         initializeTables();
     }

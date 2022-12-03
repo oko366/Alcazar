@@ -12,26 +12,19 @@ import moe.oko.alcazar.listener.PlayerJoinListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Alcazar extends JavaPlugin {
-    private AlcazarConfig config;
-    private AlcazarDB db;
-    private InventoryHandler inventoryHandler;
-    private WarpHandler warpHandler;
-
-    private DeathMessageHandler deathMessageHandler;
-    private HolographicDisplaysAPI holographicDisplaysAPI;
 
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
         this.reloadConfig();
 
-        config = new AlcazarConfig(this.getConfig());
-        db = config.createDB(this);
+        var config = new AlcazarConfig(this.getConfig());
+        var db = config.createDB(this);
 
-        inventoryHandler = new InventoryHandler(this, db);
-        warpHandler = new WarpHandler(this, db);
-        deathMessageHandler = new DeathMessageHandler();
-        holographicDisplaysAPI = getServer().getPluginManager().isPluginEnabled("HolographicDisplays")
+        var inventoryHandler = new InventoryHandler(this, db);
+        var warpHandler = new WarpHandler(this, db);
+        var deathMessageHandler = new DeathMessageHandler();
+        var holographicDisplaysAPI = getServer().getPluginManager().isPluginEnabled("HolographicDisplays")
                 ? HolographicDisplaysAPI.get(this)
                 : null;
 
