@@ -1,6 +1,7 @@
 package moe.oko.alcazar.command;
 
 import moe.oko.alcazar.handler.WarpHandler;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -28,24 +29,34 @@ public class WarpsCommand implements TabExecutor {
                 if (args.length != 2)
                     return false;
                 var message = handler.save((Player) sender, args[1])
-                        ? "Saved %s!".formatted(args[1])
-                        : "Unable to save %s".formatted(args[1]);
+                        ? (ChatColor.of("#986de0") + "Saved " + ChatColor.of("#ffffff") + "%s" + ChatColor.of("#986de0") + "!").formatted(args[1])
+                        : (ChatColor.of("#986de0") + "Could not save "  + ChatColor.of("#ffffff") +  "%s".formatted(args[1]));
                 sender.sendMessage(message);
             }
             case "remove" -> {
                 if (args.length != 2)
                     return false;
                 var message = handler.remove((Player) sender, args[1])
-                        ? "Removed %s!".formatted(args[1])
-                        : "Could not remove %s".formatted(args[1]);
+                        ? (ChatColor.of("#986de0") + "Removed " + ChatColor.of("#ffffff") + "%s" + ChatColor.of("#986de0") + "!").formatted(args[1])
+                        : (ChatColor.of("#986de0") + "Could not remove "  + ChatColor.of("#ffffff") +  "%s").formatted(args[1]);
                 sender.sendMessage(message);
             }
             case "list" -> {
                 var warps = handler.list();
-                if (warps != null)
-                    sender.sendMessage("There are " + warps.size() + " saved warps: " + String.join(", ", warps));
-                else
-                    sender.sendMessage("There are no saved inventories");
+                var tags = handler.tagList();
+                if (warps != null) {
+                    sender.sendMessage(ChatColor.of("#986de0") + "There are " + warps.size() + " saved warps:");
+                    for (int i = 0; i < warps.size(); i++) {
+                        if (tags.get(i).toString().equals("user")) {
+                            sender.sendMessage("   " + ChatColor.of("#ffffff") + warps.get(i) + " (§b" + tags.get(i) + ChatColor.of("#ffffff") + ")");
+                        } else {
+                            sender.sendMessage("   " + ChatColor.of("#ffffff") + warps.get(i) + " (§d" + tags.get(i) + ChatColor.of("#ffffff") + ")");
+                        }
+                    }
+                }
+                else {
+                    sender.sendMessage(ChatColor.of("#986de0") + "There are no saved warps.");
+                }
             }
             default -> { return false; }
         }

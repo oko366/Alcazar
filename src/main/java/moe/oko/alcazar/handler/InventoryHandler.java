@@ -19,11 +19,15 @@ import java.util.List;
 public class InventoryHandler {
     private final Alcazar plugin;
     private final AlcazarDB db;
+    private final boolean limitEnabled;
+    private final int limit;
     private List<String> invCache;
 
-    public InventoryHandler (Alcazar plugin, AlcazarDB db) {
+    public InventoryHandler (Alcazar plugin, AlcazarDB db, boolean limitEnabled, int limit) {
         this.plugin = plugin;
         this.db = db;
+        this.limitEnabled = limitEnabled;
+        this.limit = limit;
         updateCache();
     }
 
@@ -45,10 +49,12 @@ public class InventoryHandler {
         var serializedInv = serializedPlayerInventory[0];
         var serializedArmor = serializedPlayerInventory[1];
 
-        if (db.addNewInventory(UUID, invName, serializedInv, serializedArmor)) {
-            plugin.info("%s has saved inventory %s".formatted(player.getName(), invName));
-            updateCache();
-            return true;
+        if (!this.limitEnabled || this.db.getUUIDInvCount(UUID) < this.limit) {
+            if (db.addNewInventory(UUID, invName, serializedInv, serializedArmor)) {
+                plugin.info("%s has saved inventory %s".formatted(player, invName));
+                updateCache();
+                return true;
+            }
         }
         return false;
     }
@@ -74,7 +80,7 @@ public class InventoryHandler {
             player.getInventory().setContents(inventory);
             player.getInventory().setArmorContents(armor);
             player.updateInventory();
-            plugin.info("%s was given inventory %s".formatted(player.getName(), invName));
+            plugin.info("%s was given inventory %s".formatted(player, invName));
             updateCache();
             return true;
         } catch (IOException e) { return false; }
@@ -89,9 +95,9 @@ public class InventoryHandler {
     public boolean remove(@Nullable Player player, String invName) {
         if (db.removeInventory(invName)) {
             if (player != null)
-                plugin.info("%s has removed inventory %s".formatted(player.getName(), invName));
+                plugin.info("%s has removed inventory %s".formatted(player, invName));
             var msg = player != null
-                    ? "%s has removed inventory %s".formatted(player.getName(), invName)
+                    ? "%s has removed inventory %s".formatted(player, invName)
                     : "inventory %s was removed".formatted(invName);
             plugin.info(msg);
             updateCache();

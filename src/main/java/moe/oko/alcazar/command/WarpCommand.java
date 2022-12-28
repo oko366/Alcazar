@@ -1,6 +1,7 @@
 package moe.oko.alcazar.command;
 
 import moe.oko.alcazar.handler.WarpHandler;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -23,8 +24,8 @@ public class WarpCommand implements TabExecutor {
         if (args.length != 1)
             return false;
         var message = handler.load((Player) sender, args[0])
-                ? "Warping to %s!".formatted(args[0])
-                : "%s not found.".formatted(args[0]);
+                ? (ChatColor.of("#986de0") + "Warping to " + ChatColor.of("#ffffff") + "%s" + ChatColor.of("#986de0") + "!").formatted(args[0])
+                : (ChatColor.of("#ffffff") + "%s" + ChatColor.of("#986de0") + " not found.").formatted(args[0]);
         sender.sendMessage(message);
 
         return true;

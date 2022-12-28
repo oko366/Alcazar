@@ -17,23 +17,31 @@ import java.util.List;
 public class WarpHandler {
     private final Alcazar plugin;
     private final AlcazarDB db;
+    private final boolean limitEnabled;
+    private final int limit;
     private List<String> warpCache;
+    private List<String> tagCache;
 
-    public WarpHandler (Alcazar plugin, AlcazarDB db) {
+    public WarpHandler (Alcazar plugin, AlcazarDB db, boolean limitEnabled, int limit) {
         this.plugin = plugin;
         this.db = db;
+        this.limitEnabled = limitEnabled;
+        this.limit = limit;
         updateCache();
     }
 
     /**
-     * Updates a cached list of inventories.
+     * Updates a cached list of warps.
      */
-    private void updateCache() { warpCache = db.getAllWarpNames(); }
+    private void updateCache() {
+        warpCache = db.getAllWarpNames();
+        tagCache = db.getAllWarpTags();
+    }
 
     /**
-     * Upserts an inventory to the database.
-     * TODO: create a configurable limit of inventories per player.
-     * @param player the player saving the inventory.
+     * Upserts a warp to the database.
+     * TODO: create a configurable limit of warps per player.
+     * @param player the player saving the warp.
      * @param warpName the identifier for the warp.
      * @return if successful
      */
@@ -41,10 +49,12 @@ public class WarpHandler {
         var UUID = player.getUniqueId().toString();
         var base64Location = locationToBase64(player.getLocation());
 
-        if (db.addNewWarp(UUID, warpName, base64Location)) {
-            plugin.info("%s has saved warp %s".formatted(player, warpName));
-            updateCache();
-            return true;
+        if (!this.limitEnabled || this.db.getUUIDWarpCount(UUID) < this.limit) {
+            if (db.addNewWarp(UUID, warpName, base64Location)) {
+                plugin.info("%s has saved warp %s".formatted(player, warpName));
+                updateCache();
+                return true;
+            }
         }
         return false;
     }
@@ -67,9 +77,9 @@ public class WarpHandler {
     }
 
     /**
-     * Removes an inventory from the database.
+     * Removes a warp from the database.
      * @param player the player requesting the removal. Nullable.
-     * @param warpName the identifier for the inventory.
+     * @param warpName the identifier for the warp.
      * @return if successful.
      */
     public boolean remove(@Nullable Player player, String warpName) {
@@ -88,6 +98,9 @@ public class WarpHandler {
     
     public List<String> list() {
         return warpCache;
+    }
+    public List<String> tagList() {
+        return tagCache;
     }
 
     public String locationToBase64(Location location) throws IllegalStateException {
@@ -127,7 +140,7 @@ public class WarpHandler {
             var inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             var dataInput = new BukkitObjectInputStream(inputStream);
 
-            // Read the serialized inventory
+            // Read the serialized warp
             var toReturn = (Location) dataInput.readObject();
 
             dataInput.close();
