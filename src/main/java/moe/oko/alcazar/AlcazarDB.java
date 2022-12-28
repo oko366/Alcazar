@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import moe.oko.alcazar.model.DatabaseCredentials;
+import org.bukkit.entity.Player;
+import org.bukkit.Location;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -45,7 +47,7 @@ public class AlcazarDB {
             connection.prepareStatement("CREATE TABLE IF NOT EXISTS `inventories`" +
                     "(uuid VARCHAR(128), name VARCHAR(64) UNIQUE, si TEXT, sa TEXT);").execute();
             connection.prepareStatement("CREATE TABLE IF NOT EXISTS `warps`" +
-                    "(uuid VARCHAR(128), name VARCHAR(64), location TEXT);").execute();
+                    "(uuid VARCHAR(128), name VARCHAR(64), location TEXT, tag TEXT);").execute();
         } catch (SQLException e) {
             plugin.severe("Failed to initialize SQL tables (permissions issue?)");
             e.printStackTrace();
@@ -94,10 +96,11 @@ public class AlcazarDB {
 
     public boolean addNewWarp(String UUID, String name, String base64Location) {
         try {
-            var ps = connection.prepareStatement("REPLACE INTO warps(uuid, name, location) VALUES (?, ?, ?)");
+            var ps = connection.prepareStatement("REPLACE INTO warps(uuid, name, location, tag) VALUES (?, ?, ?, ?)");
             ps.setString(1, UUID);
             ps.setString(2, name);
             ps.setString(3, base64Location);
+            ps.setString(4, "user");
             ps.execute();
             ps.close();
             return true;
@@ -200,6 +203,26 @@ public class AlcazarDB {
         return null;
     }
 
+    public int getUUIDInvCount(String UUID) {
+        try {
+            var ps = connection.prepareStatement("SELECT uuid FROM inventories");
+            var rs = ps.executeQuery();
+            int toReturn = 0;
+            if (rs.next()) {
+                if (rs.getString("uuid").equals(UUID)) { toReturn++; }
+                while(rs.next()){
+                    if (rs.getString("uuid").equals(UUID)) { toReturn++; }
+                }
+                ps.close();
+                rs.close();
+            }
+            return toReturn;
+        } catch (SQLException e) {
+            plugin.severe("Unable to get the inventory count.");
+        }
+        return 2147483647;
+    }
+
     public List<String> getAllWarpNames(){
         try {
             var ps = connection.prepareStatement("SELECT name FROM warps");
@@ -218,6 +241,46 @@ public class AlcazarDB {
             plugin.severe("Unable to get the warp list.");
         }
         return null;
+    }
+
+    public List<String> getAllWarpTags(){
+        try {
+            var ps = connection.prepareStatement("SELECT tag FROM warps");
+            var rs = ps.executeQuery();
+            if (rs.next()) {
+                List<String> names = new ArrayList<>();
+                names.add(rs.getString("tag"));
+                while(rs.next()){
+                    names.add(rs.getString("tag"));
+                }
+                ps.close();
+                rs.close();
+                return names;
+            }
+        } catch (SQLException e) {
+            plugin.severe("Unable to get the warp tag list.");
+        }
+        return null;
+    }
+
+    public int getUUIDWarpCount(String UUID) {
+        try {
+            var ps = connection.prepareStatement("SELECT uuid FROM warps");
+            var rs = ps.executeQuery();
+            int toReturn = 0;
+            if (rs.next()) {
+                if (rs.getString("uuid").equals(UUID)) { toReturn++; }
+                while(rs.next()){
+                    if (rs.getString("uuid").equals(UUID)) { toReturn++; }
+                }
+                ps.close();
+                rs.close();
+            }
+            return toReturn;
+        } catch (SQLException e) {
+            plugin.severe("Unable to get the warp count.");
+        }
+        return 2147483647;
     }
 
 }

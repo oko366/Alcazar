@@ -23,4 +23,7 @@ public class AlcazarConfig {
                 sql.getLong("idleTimeout"),
                 sql.getLong("maxLifetime"));
     }
+    public Object getConfigValue(String section, String value) {
+        return config.getConfigurationSection(section).get(value);
+    }
 }
